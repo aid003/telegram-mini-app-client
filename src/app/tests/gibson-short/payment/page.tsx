@@ -29,7 +29,7 @@ export default function Home() {
       <List>
         {/* 1. Новый заголовок курса */}
         <SectionCard
-          title="🧑🏫 Курс отношений"
+          title="🏫 Курс отношений"
           icon="❤️"
           content={
             <div style={styles.heroContainer}>
