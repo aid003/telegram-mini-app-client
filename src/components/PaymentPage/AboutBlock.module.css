@@ -1,0 +1,137 @@
+.heroContainer {
+  padding: 24px 0;
+  position: relative;
+}
+
+.heroContent {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.courseTitle {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 16px 0;
+  color: var(--tg-theme-text-color);
+  letter-spacing: -0.03em;
+}
+
+.courseDescription {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--tg-theme-hint-color);
+  margin: 0;
+  padding: 0 20px;
+  font-weight: 400;
+}
+
+.quoteCard {
+  padding: 1.5rem;
+  background: var(--tg-theme-bg-color);
+  border-radius: 0.8rem;
+  position: relative;
+  text-align: center;
+}
+
+.quoteMark {
+  font-size: 3rem;
+  color: var(--tg-theme-button-color);
+  opacity: 0.1;
+  position: absolute;
+  top: -0.5rem;
+  left: 0.5rem;
+}
+
+.quoteText {
+  font-size: 1rem;
+  line-height: 1.7;
+  font-style: italic;
+  margin: 1rem 0;
+  color: var(--tg-theme-text-color);
+}
+
+.quoteAuthor {
+  font-weight: 500;
+  color: var(--tg-theme-hint-color);
+  font-size: 0.95rem;
+}
+
+.videoContainer {
+  border-radius: 0.8rem;
+  overflow: hidden;
+  margin: 1rem 0;
+  aspect-ratio: 16/9;
+  background: #000;
+}
+
+.videoPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.textSlide {
+  padding: 0.5rem 0;
+}
+
+.subTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.2rem 0 0.8rem;
+  color: var(--tg-theme-text-color);
+}
+
+.list {
+  padding-left: 1.2rem;
+  margin: 0.8rem 0;
+}
+
+.listItem {
+  margin: 0.6rem 0;
+  padding: 0.5rem;
+  position: relative;
+}
+
+.listItem::before {
+  content: "•";
+  color: var(--tg-theme-button-color);
+  position: absolute;
+  left: -0.8rem;
+  font-size: 1.2rem;
+}
+
+.paragraph {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 1rem 0;
+  color: var(--tg-theme-text-color);
+}
+
+.attachmentTypes {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin: 1rem 0;
+}
+
+.attachmentCard {
+  background: var(--tg-theme-bg-color);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.attachmentTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--tg-theme-text-color);
+}
+
+.attachmentText {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--tg-theme-hint-color);
+}
