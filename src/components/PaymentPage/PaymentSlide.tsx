@@ -1,6 +1,17 @@
+import { useEffect } from "react";
 import styles from "./PaymentSlide.module.css";
 
 export function PaymentSlide() {
+  useEffect(() => {
+    async function generatePaymentLink() {
+      
+    }
+
+    generatePaymentLink();
+  }, []);
+
+  const buttonHandler = () => {};
+
   return (
     <div
       style={{
@@ -13,6 +24,7 @@ export function PaymentSlide() {
       }}
     >
       <button
+        onClick={buttonHandler}
         style={{
           width: "100%",
           padding: "18px 28px",
@@ -27,12 +39,10 @@ export function PaymentSlide() {
           justifyContent: "center",
           gap: "14px",
           boxShadow: "0 6px 20px rgba(76, 175, 80, 0.3)",
-          transition: "all 0.2s ease",
           cursor: "pointer",
         }}
       >
-        <span style={{ fontSize: "24px" }}>🚀</span>
-        <span>Начать курс</span>
+        <span>🚀 Купить курс</span>
       </button>
     </div>
   );
