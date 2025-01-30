@@ -58,7 +58,7 @@ export default function Home() {
   }
 
   return (
-    <Page>
+    <Page back={false}>
       <List>
         <div
           style={{

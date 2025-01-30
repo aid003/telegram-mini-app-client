@@ -53,8 +53,8 @@ const getCourseTitle = (problems: AttachmentType[]): string => {
 const getCourseDescription = (problems: AttachmentType[]): string => {
   const descriptions: Record<string, string> = {
     anxious: "5 практик для снижения эмоционального напряжения",
-    avoidant: "7 шагов к здоровой близости",
-    disorganized: "Методы стабилизации эмоционального состояния",
+    avoidant: "7 шагов к пониманию своего партнера",
+    disorganized: "3 шага к получению эмоционального равновесия",
     "anxious-avoidant": "Преодоление цикла «погоня-отступление»",
     "disorganized-anxious": "Снижение интенсивности эмоциональных реакций",
     "avoidant-disorganized": "Работа с противоречивыми паттернами поведения",

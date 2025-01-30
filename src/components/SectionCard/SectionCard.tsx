@@ -35,13 +35,13 @@ export const SectionCard = ({
     >
       <h3
         style={{
-          fontSize: "1.1rem",
+          fontSize: "1.4rem",
           fontWeight: 600,
           margin: "0 0 1rem",
           color: "var(--tg-theme-text-color)",
           display: "flex",
           alignItems: "center",
-          gap: "0.8rem",
+          gap: "0.5rem",
         }}
       >
         <span
@@ -49,7 +49,7 @@ export const SectionCard = ({
         >
           {icon}
         </span>
-        {title}
+        <div style={{ fontSize: "1.5rem", lineHeight: "28px" }}>{title}</div>
       </h3>
       {content}
     </div>

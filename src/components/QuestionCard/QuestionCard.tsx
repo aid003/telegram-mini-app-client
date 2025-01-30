@@ -71,7 +71,7 @@ export const QuestionCard = ({
       <List>
         <Section
           style={{
-            padding: "8px 0",
+            padding: "10px 0",
             backgroundColor: "var(--tg-theme-secondary-bg-color)",
             margin: "0 0 6px 0",
             width: "100%",
@@ -90,9 +90,9 @@ export const QuestionCard = ({
               textAlign: "center",
               color: "var(--tg-theme-text-color)",
               width: "100%",
-              padding: "4px 16px",
+              padding: "20px 16px",
               boxSizing: "border-box",
-              maxHeight: 88,
+              maxHeight: 120,
               overflow: "hidden",
               display: "-webkit-box",
               WebkitBoxOrient: "vertical",
