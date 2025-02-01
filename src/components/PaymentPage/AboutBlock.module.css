@@ -1,3 +1,5 @@
+/* AboutBlock.module.css */
+
 .heroContainer {
   padding: 24px 0;
   position: relative;
@@ -112,10 +114,13 @@
 }
 
 .attachmentTypes {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  margin: 1rem 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.attachmentCard:first-child {
+  margin-bottom: 4vh;
 }
 
 .attachmentCard {

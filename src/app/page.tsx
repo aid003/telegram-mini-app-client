@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { Image, List, Placeholder, Button } from "@telegram-apps/telegram-ui";
-import { useSignal, initData, type User } from "@telegram-apps/sdk-react";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { authStart, authSuccess, authFailure } from "@/lib/features/user/slice";
+import { useEffect, useCallback, Suspense, useState } from "react";
+import { List, Placeholder, Button } from "@telegram-apps/telegram-ui";
+import { useSignal, initData } from "@telegram-apps/sdk-react";
 import { useRouter } from "next/navigation";
 import { Page } from "@/components/Page";
 import stickerAnimation from "./_assets/sticker.json";
@@ -11,23 +13,31 @@ import dynamic from "next/dynamic";
 
 const GibsonShortTest = dynamic(() => import("./tests/gibson-short/page"), {
   suspense: true,
+  ssr: true,
 });
 
 export default function Home() {
-  const [localUserId, setLocalUserId] = useState<{ id: number } | null>(null);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+  const dispatch = useAppDispatch();
+  const {
+    id,
+    loading: authLoading,
+    error: authError,
+  } = useAppSelector((state) => state.user);
+  const [navigationLoading, setNavigationLoading] = useState(false);
+  const [navigationError, setNavigationError] = useState<string | null>(null);
 
+  const router = useRouter();
+  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
   const initDataState = useSignal(initData.state);
   const user = initDataState?.user;
 
-  useEffect(() => {
-    if (!user || localUserId) return;
-
-    const authorizeUser = async () => {
+  const authorizeUser = useCallback(
+    async (signal?: AbortSignal) => {
       try {
-        const userResponse = await fetch(`${serverUrl}/api/user-controller/`, {
+        if (!user) return;
+
+        dispatch(authStart());
+        const response = await fetch(`${serverUrl}/api/user-controller/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -35,48 +45,74 @@ export default function Home() {
             username: user.username,
             first_name: user.firstName,
           }),
+          signal,
         });
 
-        if (!userResponse.ok) throw new Error("Failed to authorize user");
-        const userData = await userResponse.json();
-        setLocalUserId(userData.id);
-        console.log("User authorized successfully");
-      } catch (error) {
-        console.error("Error authorizing user:", error);
+        if (!response.ok) throw new Error("Failed to authorize user");
+        const data = await response.json();
+        dispatch(authSuccess(data.id));
+      } catch (err) {
+        if (err instanceof Error && err.name !== "AbortError") {
+          dispatch(authFailure(err.message));
+        }
       }
-    };
-
-    authorizeUser();
-  }, [user, serverUrl, localUserId]);
+    },
+    [user, serverUrl, dispatch]
+  );
 
   useEffect(() => {
-    router.prefetch("/tests/gibson-short");
-  }, [router]);
+    if (!user || id) return;
 
-  const clickHandler = async () => {
-    if (!user || !localUserId) {
-      console.error("User data is missing or localUserId is not set yet");
-      return;
-    }
+    const controller = new AbortController();
+    authorizeUser(controller.signal);
 
-    setLoading(true);
+    return () => controller.abort();
+  }, [user, id, authorizeUser]);
 
+  const updateStatistics = useCallback(async () => {
     try {
       await fetch(`${serverUrl}/api/update-user-statictics/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: localUserId,
+          userId: id,
           stage: "miniAppLinkClicked",
           value: 1,
         }),
       });
-
-      router.push("/tests/gibson-short");
-    } catch (error) {
-      console.error("Error updating statistics:", error);
+    } catch (err) {
+      console.error("Statistics update error:", err);
     }
-  };
+  }, [id, serverUrl]);
+
+  const handleNavigation = useCallback(async () => {
+    try {
+      setNavigationLoading(true);
+      router.push("/tests/gibson-short");
+    } catch (err) {
+      setNavigationError("Ошибка перехода. Попробуйте еще раз.");
+    } finally {
+      setNavigationLoading(false);
+    }
+  }, [router]);
+
+  const clickHandler = useCallback(async () => {
+    if (!user || !id) {
+      setNavigationError("Недостаточно данных для запуска теста");
+      return;
+    }
+
+    try {
+      await Promise.all([updateStatistics(), handleNavigation()]);
+    } catch (err) {
+      if (err instanceof Error) {
+        setNavigationError(err.message);
+      }
+    }
+  }, [user, id, updateStatistics, handleNavigation]);
+
+  const isLoading = authLoading || navigationLoading;
+  const errorMessage = authError || navigationError;
 
   return (
     <Page back={false}>
@@ -87,21 +123,28 @@ export default function Home() {
               size="l"
               stretched
               onClick={clickHandler}
-              disabled={loading}
+              disabled={isLoading}
+              aria-busy={isLoading}
             >
-              {loading ? "Загрузка..." : "Пройти тест"}
+              {isLoading ? "Загрузка..." : "Пройти тест"}
             </Button>
           }
-          description="Тот самый тест по отношениям"
+          description={errorMessage || "Тот самый тест по отношениям"}
         >
           <Lottie
             animationData={stickerAnimation}
-            style={{ height: "45vh", width: "70vw" }}
+            style={{
+              height: "45vh",
+              width: "70vw",
+              pointerEvents: "none",
+            }}
+            role="presentation"
           />
         </Placeholder>
       </List>
-      {loading && (
-        <Suspense fallback={<p>Загружаю</p>}>
+
+      {isLoading && (
+        <Suspense fallback={<p aria-live="polite">Загружаю...</p>}>
           <GibsonShortTest />
         </Suspense>
       )}

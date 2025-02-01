@@ -3,6 +3,8 @@ import { Page } from "../Page";
 import { List } from "@telegram-apps/telegram-ui";
 import { SectionCard } from "../SectionCard/SectionCard";
 import styles from "./AboutBlock.module.css";
+import Image from "next/image";
+import gif from "../../../public/gif.gif";
 
 export function AboutBlock({ children }: PropsWithChildren) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -62,12 +64,11 @@ export function AboutBlock({ children }: PropsWithChildren) {
         />
 
         <div className={styles.videoContainer}>
-          <video
-            ref={videoRef}
-            // src="https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
-            src="../../app/_assets/gif.mp4"
-            muted
-            playsInline
+          <Image
+            width={900}
+            height={600}
+            alt="gif file"
+            src={gif}
             className={styles.videoPlayer}
           />
         </div>
@@ -97,10 +98,10 @@ export function AboutBlock({ children }: PropsWithChildren) {
               <h3 className={styles.subTitle}>Как это работает?:</h3>
               <p className={styles.paragraph}>
                 В этом курсе мы собрали весь необходимый минимум для улучшения
-                эмоциональная интеллекта.
+                эмоционального интеллекта.
                 <br />
                 Вся практика будет занимать не более 10 минут, а теория будет
-                действовать постепенно, для лучшего условия материала.
+                действовать постепенно, для лучшего усвоения материала.
               </p>
             </div>
           }
@@ -115,7 +116,11 @@ export function AboutBlock({ children }: PropsWithChildren) {
               <div className={styles.attachmentTypes}>
                 <div className={styles.attachmentCard}>
                   <h4 className={styles.attachmentTitle}>Это плюс</h4>
-                  <ul style={{ textAlign: "start" }}>
+                  <ul
+                    style={{
+                      textAlign: "start",
+                    }}
+                  >
                     <li className={styles.attachmentText}>
                       Для вашего мировоззрения
                     </li>
@@ -127,16 +132,22 @@ export function AboutBlock({ children }: PropsWithChildren) {
                 </div>
                 <div className={styles.attachmentCard}>
                   <h4 className={styles.attachmentTitle}>Это минус</h4>
-                  <p className={styles.attachmentText}>
-                    Для тех вами манипулирует
-                  </p>
+                  <ul
+                    style={{
+                      textAlign: "start",
+                    }}
+                  >
+                    <li className={styles.attachmentText}>
+                      Для тех, кто вами манипулирует
+                    </li>
+                  </ul>
                 </div>
               </div>
 
               <h3 className={styles.subTitle}>А что по цене:</h3>
               <p className={styles.paragraph}>
                 Оплату мы сделали символичной. Нам важно, чтобы у вас была
-                примитивная мотивация получить эти знания и извечь из них
+                примитивная мотивация получить эти знания и извлечь из них
                 пользу. Поэтому используйте этот курс как маленький шаг, который
                 сделает вашу жизнь лучше.
               </p>
@@ -145,43 +156,6 @@ export function AboutBlock({ children }: PropsWithChildren) {
         />
         {children}
       </List>
-
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700&display=swap");
-
-        * {
-          font-family: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI",
-            Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
-            sans-serif;
-          line-height: 1.6;
-          letter-spacing: -0.01em;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4 {
-          font-weight: 700;
-          margin: 0;
-        }
-
-        p {
-          color: var(--tg-theme-text-color);
-          hyphens: auto;
-        }
-
-        @media (max-width: 480px) {
-          h3 {
-            font-size: 1.1rem !important;
-          }
-
-          p,
-          li {
-            font-size: 0.92rem !important;
-            line-height: 1.7 !important;
-          }
-        }
-      `}</style>
     </Page>
   );
 }
