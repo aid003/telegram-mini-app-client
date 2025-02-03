@@ -8,12 +8,15 @@ import { useSignal, initData } from "@telegram-apps/sdk-react";
 import { useRouter } from "next/navigation";
 import { Page } from "@/components/Page";
 import stickerAnimation from "./_assets/sticker.json";
-import Lottie from "lottie-react";
 import dynamic from "next/dynamic";
 
 const GibsonShortTest = dynamic(() => import("./tests/gibson-short/page"), {
   suspense: true,
-  ssr: true,
+  ssr: false,
+});
+
+const LottieAnimation = dynamic(() => import("lottie-react"), {
+  ssr: false,
 });
 
 export default function Home() {
@@ -28,8 +31,9 @@ export default function Home() {
 
   const router = useRouter();
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
+
   const initDataState = useSignal(initData.state);
-  const user = initDataState?.user;
+  const user = typeof window !== "undefined" ? initDataState?.user : null;
 
   const authorizeUser = useCallback(
     async (signal?: AbortSignal) => {
@@ -131,7 +135,7 @@ export default function Home() {
           }
           description={errorMessage || "Тот самый тест по отношениям"}
         >
-          <Lottie
+          <LottieAnimation
             animationData={stickerAnimation}
             style={{
               height: "45vh",

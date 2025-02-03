@@ -7,25 +7,6 @@ import Image from "next/image";
 import gif from "../../../public/gif.gif";
 
 export function AboutBlock({ children }: PropsWithChildren) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          videoRef.current?.play();
-        } else {
-          videoRef.current?.pause();
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    if (videoRef.current) observer.observe(videoRef.current);
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <Page back={false}>
       <List>

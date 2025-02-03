@@ -99,7 +99,6 @@ export function PaymentSlide() {
         ) : (
           <>
             <span>🚀 Купить курс</span>
-            {paymentLink && " (Перейти к оплате)"}
           </>
         )}
       </button>
