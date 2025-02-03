@@ -31,6 +31,7 @@ export default function Home() {
 
   const router = useRouter();
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
+  
   const initDataState = useSignal(initData.state);
   const user = initDataState?.user;
 
