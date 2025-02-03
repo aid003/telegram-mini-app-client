@@ -31,9 +31,8 @@ export default function Home() {
 
   const router = useRouter();
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
-
   const initDataState = useSignal(initData.state);
-  const user = typeof window !== "undefined" ? initDataState?.user : null;
+  const user = initDataState?.user;
 
   const authorizeUser = useCallback(
     async (signal?: AbortSignal) => {
