@@ -21,6 +21,7 @@ type AttachmentType = "secure" | "anxious" | "avoidant" | "disorganized";
 type CourseCardProps = {
   problems: AttachmentType[];
   icon: string;
+  isLoading: boolean;
   status?: "locked" | "available" | "completed";
   onStart?: () => void;
 };
@@ -67,6 +68,7 @@ const getCourseDescription = (problems: AttachmentType[]): string => {
 export function CourseCard({
   problems,
   icon,
+  isLoading: boolean,
   status = "available",
   onStart,
 }: CourseCardProps) {
