@@ -12,7 +12,7 @@ import dynamic from "next/dynamic";
 
 const GibsonShortTest = dynamic(() => import("./tests/gibson-short/page"), {
   suspense: true,
-  ssr: false,
+  ssr: true,
 });
 
 const LottieAnimation = dynamic(() => import("lottie-react"), {
@@ -31,7 +31,7 @@ export default function Home() {
 
   const router = useRouter();
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
-  
+
   const initDataState = useSignal(initData.state);
   const user = initDataState?.user;
 
