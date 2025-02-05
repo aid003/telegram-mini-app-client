@@ -10,13 +10,8 @@ import { Page } from "@/components/Page";
 import stickerAnimation from "./_assets/sticker.json";
 import dynamic from "next/dynamic";
 
-const GibsonShortTest = dynamic(() => import("./tests/gibson-short/page"), {
-  suspense: true,
-  ssr: true,
-});
-
 const LottieAnimation = dynamic(() => import("lottie-react"), {
-  ssr: false,
+  ssr: true,
 });
 
 export default function Home() {
@@ -146,12 +141,6 @@ export default function Home() {
           />
         </Placeholder>
       </List>
-
-      {isLoading && (
-        <Suspense fallback={<p aria-live="polite">Загружаю...</p>}>
-          <GibsonShortTest />
-        </Suspense>
-      )}
     </Page>
   );
 }
