@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useSignal, initData } from "@telegram-apps/sdk-react";
 
 declare global {
   interface Window {
@@ -68,14 +69,50 @@ const getCourseDescription = (problems: AttachmentType[]): string => {
 export function CourseCard({
   problems,
   icon,
-  isLoading: boolean,
+  isLoading,
   status = "available",
   onStart,
 }: CourseCardProps) {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
 
+  // Получаем данные пользователя из initData
+  const initDataState = useSignal(initData.state);
+  const user = initDataState?.user;
+  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
+
+  // Функция для отправки статистики
+  const updateStatistics = useCallback(async () => {
+    if (!user || !user.id) {
+      console.error("Нет данных пользователя для обновления статистики.");
+      return;
+    }
+    try {
+      const response = await fetch(`${serverUrl}/api/update-user-statictics/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          stage: "courseButtonClicked",
+          value: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Ошибка обновления статистики: ", await response.text());
+      }
+    } catch (err) {
+      console.error("Ошибка обновления статистики:", err);
+    }
+  }, [user, serverUrl]);
+
+  // Обработчик нажатия на кнопку
   const handleButtonClick = async () => {
+    if (isLoading) return;
+    updateStatistics().catch((err) => console.error("Ошибка статистики:", err)); // Отправка статистики в фоне
+    if (onStart) {
+      onStart();
+    }
     router.push("gibson-short/payment");
   };
 
@@ -159,6 +196,7 @@ export function CourseCard({
       </div>
       <button
         onClick={handleButtonClick}
+        disabled={isLoading}
         style={{
           width: "100%",
           padding: "18px 28px",
