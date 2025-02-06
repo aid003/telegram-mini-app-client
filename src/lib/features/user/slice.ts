@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface UserState {
+  id: number | null;
+  loading: boolean;
+  error: string | null;
+}
+
 const initialState: UserState = {
-  _persisted: false,
   id: null,
   loading: false,
   error: null,
@@ -23,8 +28,12 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    rehydrate: (state, action: PayloadAction<UserState | null>) => {
+      return action.payload || state;
+    },
   },
 });
 
-export const { authStart, authSuccess, authFailure } = userSlice.actions;
+export const { authStart, authSuccess, authFailure, rehydrate } =
+  userSlice.actions;
 export default userSlice.reducer;

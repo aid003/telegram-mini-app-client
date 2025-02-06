@@ -48,7 +48,9 @@ const QuestionSection = styled(Section)<QuestionSectionProps>`
   justify-content: center;
   min-height: 56px;
   overflow: hidden;
-  transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
   transform: ${({ animationStage }: QuestionSectionProps) =>
     animationStage === "exiting"
       ? "scale(1.05)"
@@ -102,8 +104,9 @@ const AnswerCell = styled(Cell)<AnswerCellProps>`
     `
     border-bottom: 1px solid rgba(85, 166, 255, 0.3);
   `}
-  transition: transform 0.25s ease-out, opacity 0.25s ease-out;
-  transition-delay: ${({ index }: AnswerCellProps) => `${index * 30}ms`};
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: ${({ index }: AnswerCellProps) => `${index * 50}ms`};
+  will-change: transform, opacity;
   opacity: ${({ animationStage }: AnswerCellProps) =>
     animationStage === "idle" ? 1 : 0};
   transform: ${({ animationStage }: AnswerCellProps) =>
@@ -138,8 +141,8 @@ export const QuestionCard = ({
         previousQuestionRef.current = question;
         setCurrentQuestion(question);
         setAnimationStage("entering");
-        setTimeout(() => setAnimationStage("idle"), 250);
-      }, 250);
+        setTimeout(() => setAnimationStage("idle"), 500);
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [question]);
