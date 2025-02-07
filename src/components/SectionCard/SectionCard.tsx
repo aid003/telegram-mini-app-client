@@ -20,7 +20,7 @@ export const SectionCard = ({
       style={{
         background: "var(--tg-theme-secondary-bg-color)",
         borderRadius: "1rem",
-        padding: "1.2rem",
+        padding: "0.5rem 1.2rem",
         margin: "1.5rem 0",
         boxShadow: isHovered
           ? "0 6px 16px rgba(0,0,0,0.12)"

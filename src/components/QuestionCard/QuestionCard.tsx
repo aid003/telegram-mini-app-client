@@ -82,7 +82,7 @@ const QuestionText = styled(Text)`
   margin: 0;
 
   @media (max-height: 600px) {
-    font-size: 14px;
+    font-size: 18px;
     padding: 10px 8px;
   }
 `;
