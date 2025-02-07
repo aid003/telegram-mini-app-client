@@ -438,16 +438,12 @@ export function ResultSlide({ results }: { results: Results }) {
             </div>
           }
         />
-      </div>
 
-      {/* Передаём isLoading и наш обработчик в CourseCard */}
-      <CourseCard
-        problems={["anxious", "avoidant"]}
-        icon="🧘"
-        status="available"
-        onStart={handleStartCourse}
-        isLoading={isLoading} // Используется для смены текста кнопки внутри CourseCard
-      />
+        <CourseCard
+          onStart={handleStartCourse}
+          isLoading={isLoading} 
+        />
+      </div>
     </div>
   );
 }

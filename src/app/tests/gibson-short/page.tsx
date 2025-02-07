@@ -77,7 +77,7 @@ export default function Home() {
             marginBottom: "20px",
           }}
         >
-          Выберите одно из утверждений
+          Выберите одно из утверждений:
         </Headline>
         <QuestionCard
           question={questions[currentQuestion].question}

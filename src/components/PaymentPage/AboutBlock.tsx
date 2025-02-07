@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useRef } from "react";
+import { PropsWithChildren } from "react";
 import { Page } from "../Page";
 import { List } from "@telegram-apps/telegram-ui";
 import { SectionCard } from "../SectionCard/SectionCard";
@@ -11,19 +11,18 @@ export function AboutBlock({ children }: PropsWithChildren) {
     <Page back={false}>
       <List>
         <SectionCard
-          title="Курс отношений"
-          icon="🏫"
+          title="Практический курс"
+          icon="❤️"
           content={
             <div className={styles.heroContainer}>
               <div className={styles.heroContent}>
                 <h1 className={styles.courseTitle}>
                   Познание себя через эмоции
                 </h1>
-                <p className={styles.courseDescription}>
-                  Практический курс о том, как пользоваться эмоциональным
-                  интеллектом и как с его помощью улучшить отношения со своим
-                  окружением.
-                </p>
+                <i className={styles.courseDescription}>
+                  Курс о том, как пользоваться эмоциональным интеллектом и как с
+                  его помощью улучшить отношения со своим окружением.
+                </i>
               </div>
             </div>
           }
@@ -46,8 +45,8 @@ export function AboutBlock({ children }: PropsWithChildren) {
 
         <div className={styles.videoContainer}>
           <Image
-            width={900}
-            height={600}
+            width={1200}
+            height={900}
             alt="gif file"
             src={gif}
             className={styles.videoPlayer}
@@ -59,7 +58,6 @@ export function AboutBlock({ children }: PropsWithChildren) {
           icon="📚"
           content={
             <div className={styles.textSlide}>
-              <h3 className={styles.subTitle}>Ключевые принципы:</h3>
               <ul className={styles.list}>
                 <li className={styles.listItem}>
                   Понимать какие потребности на самом деле стоят за эмоциями
@@ -76,7 +74,7 @@ export function AboutBlock({ children }: PropsWithChildren) {
                 </li>
               </ul>
 
-              <h3 className={styles.subTitle}>Как это работает?:</h3>
+              <h3 className={styles.subTitle}>Как это работает?</h3>
               <p className={styles.paragraph}>
                 В этом курсе мы собрали весь необходимый минимум для улучшения
                 эмоционального интеллекта.
@@ -125,12 +123,12 @@ export function AboutBlock({ children }: PropsWithChildren) {
                 </div>
               </div>
 
-              <h3 className={styles.subTitle}>А что по цене:</h3>
-              <p className={styles.paragraph}>
-                Оплату мы сделали символичной. Нам важно, чтобы у вас была
+              <h3 className={styles.subTitle}>А какая цена?</h3>
+              <p className={styles.paragraphLast}>
+                Оплату мы сделали символичной.<br/>Нам важно, чтобы у вас была
                 примитивная мотивация получить эти знания и извлечь из них
-                пользу. Поэтому используйте этот курс как маленький шаг, который
-                сделает вашу жизнь лучше.
+                пользу. <br/>Поэтому используйте этот курс как маленький шаг, который сделает
+                вашу жизнь лучше.
               </p>
             </div>
           }
