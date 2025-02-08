@@ -2,16 +2,30 @@
 
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { authStart, authSuccess, authFailure } from "@/lib/features/user/slice";
-import { useEffect, useCallback, Suspense, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { List, Placeholder, Button } from "@telegram-apps/telegram-ui";
 import { useSignal, initData } from "@telegram-apps/sdk-react";
 import { useRouter } from "next/navigation";
 import { Page } from "@/components/Page";
 import stickerAnimation from "./_assets/sticker.json";
 import dynamic from "next/dynamic";
+import { InfinitySpin } from "react-loader-spinner";
 
 const LottieAnimation = dynamic(() => import("lottie-react"), {
   ssr: true,
+  loading: () => (
+    <div
+      style={{
+        height: "45vh",
+        width: "70vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <InfinitySpin width="100" color="#4fa94d" />
+    </div>
+  ),
 });
 
 export default function Home() {
@@ -23,6 +37,7 @@ export default function Home() {
   } = useAppSelector((state) => state.user);
   const [navigationLoading, setNavigationLoading] = useState(false);
   const [navigationError, setNavigationError] = useState<string | null>(null);
+  const [isContentLoaded, setIsContentLoaded] = useState(false);
 
   const router = useRouter();
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
@@ -60,11 +75,17 @@ export default function Home() {
   );
 
   useEffect(() => {
-    if (!user || id) return;
+    if (!user) return;
+
+    if (id) {
+      setIsContentLoaded(true);
+      return;
+    }
 
     const controller = new AbortController();
-    authorizeUser(controller.signal);
-
+    authorizeUser(controller.signal).then(() => {
+      setIsContentLoaded(true);
+    });
     return () => controller.abort();
   }, [user, id, authorizeUser]);
 
@@ -112,6 +133,21 @@ export default function Home() {
 
   const isLoading = authLoading || navigationLoading;
   const errorMessage = authError || navigationError;
+
+  if (!isContentLoaded) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <InfinitySpin width="200" color="#4fa94d" />
+      </div>
+    );
+  }
 
   return (
     <Page back={false}>

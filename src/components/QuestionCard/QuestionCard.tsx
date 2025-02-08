@@ -24,7 +24,8 @@ interface AnswerCellProps {
 
 // Контейнер, занимающий всю высоту экрана
 const Container = styled.div`
-  min-height: 100vh;
+  min-height: 82vh;
+  max-height: 83vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -67,7 +68,7 @@ const QuestionSection = styled(Section)<QuestionSectionProps>`
 
 // Текст вопроса с адаптивными размерами
 const QuestionText = styled(Text)`
-  font-size: 16px;
+  font-size: 18px;
   text-align: center;
   color: var(--tg-theme-text-color);
   width: 100%;

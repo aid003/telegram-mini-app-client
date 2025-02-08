@@ -53,9 +53,35 @@ export function PaymentSlide() {
     }
   };
 
+  const updateStatistics = async () => {
+    if (!userId) {
+      setError("Пользователь не авторизирован");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${serverUrl}/api/update-user-statictics/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: userId,
+          stage: "courseButtonClicked",
+          value: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Ошибка обновления статистики: ", await response.text());
+      }
+    } catch (err) {
+      console.error("Ошибка обновления статистики:", err);
+    }
+  };
+
   const buttonHandler = () => {
     if (!paymentLink) {
       generatePaymentLink();
+      updateStatistics();
     } else {
       window.location.href = paymentLink;
     }

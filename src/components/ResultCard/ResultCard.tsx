@@ -200,7 +200,7 @@ const psychologicalInsights: Record<AttachmentType, PsychologicalInsight> = {
   },
 };
 
-// Простые переводы для отображения заголовков
+
 const typeTranslations: Record<AttachmentType, string> = {
   secure: "Уверенный",
   anxious: "Тревожный",
@@ -208,9 +208,7 @@ const typeTranslations: Record<AttachmentType, string> = {
   disorganized: "Несформированный",
 };
 
-// Компонент, отображающий результаты теста
 export function ResultSlide({ results }: { results: Results }) {
-  // Состояние для отслеживания загрузки курса
   const [isLoading, setIsLoading] = useState(false);
 
   const { main, secondaries } = getDominantType(results);
@@ -227,12 +225,8 @@ export function ResultSlide({ results }: { results: Results }) {
     color: "var(--tg-theme-text-color)",
   };
 
-  // Обработчик запуска курса с визуальным сопровождением
   const handleStartCourse = async () => {
     setIsLoading(true);
-    // Здесь можно ускорить загрузку (например, предзагрузить данные или выполнить необходимые операции)
-    // Для демонстрации эмулируем быструю загрузку с задержкой 500 мс:
-    await new Promise((resolve) => setTimeout(resolve, 500));
     console.log("Start course");
     setIsLoading(false);
   };
