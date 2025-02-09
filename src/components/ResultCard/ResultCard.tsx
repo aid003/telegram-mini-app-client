@@ -217,7 +217,6 @@ export function ResultSlide({ results }: { results: Results }) {
     (type) => typeTranslations[type]
   );
 
-  // Единый стиль для текста
   const commonTextStyle = {
     fontFamily: "'Nunito', 'Segoe UI', sans-serif",
     fontSize: "1rem",
