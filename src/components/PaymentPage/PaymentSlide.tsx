@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAppSelector } from "@/lib/store/hooks";
 import styles from "./PaymentSlide.module.css";
 
@@ -11,12 +11,32 @@ export function PaymentSlide() {
   const amount = process.env.NEXT_PUBLIC_AMOUNT!;
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
 
+  const sendStatistics = async (stage: string, value: number) => {
+    if (!userId) return;
+    try {
+      const response = await fetch(`${serverUrl}/api/update-user-statictics/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: userId,
+          stage,
+          value,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Ошибка обновления статистики: ", await response.text());
+      }
+    } catch (err) {
+      console.error("Ошибка обновления статистики:", err);
+    }
+  };
+
   const generatePaymentLink = async () => {
     if (!userId) {
       setError("Пользователь не авторизован");
       return;
     }
-
     setIsLoading(true);
     setError(null);
 
@@ -53,35 +73,11 @@ export function PaymentSlide() {
     }
   };
 
-  const updateStatistics = async () => {
-    if (!userId) {
-      setError("Пользователь не авторизирован");
-      return;
-    }
-
-    try {
-      const response = await fetch(`${serverUrl}/api/update-user-statictics/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: userId,
-          stage: "courseButtonClicked",
-          value: 1,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error("Ошибка обновления статистики: ", await response.text());
-      }
-    } catch (err) {
-      console.error("Ошибка обновления статистики:", err);
-    }
-  };
-
+ 
   const buttonHandler = () => {
+    sendStatistics("courseButtonClicked", 1);
     if (!paymentLink) {
       generatePaymentLink();
-      updateStatistics();
     } else {
       window.location.href = paymentLink;
     }
@@ -120,13 +116,7 @@ export function PaymentSlide() {
           cursor: isLoading ? "not-allowed" : "pointer",
         }}
       >
-        {isLoading ? (
-          "Генерация ссылки..."
-        ) : (
-          <>
-            <span>🚀 Купить курс</span>
-          </>
-        )}
+        {isLoading ? "Генерация ссылки..." : <span>🚀 Купить курс</span>}
       </button>
 
       {error && (

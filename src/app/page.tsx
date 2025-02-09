@@ -1,8 +1,6 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { authStart, authSuccess, authFailure } from "@/lib/features/user/slice";
-import { useEffect, useCallback, useState } from "react";
+import { useState, useCallback } from "react";
 import { List, Placeholder, Button } from "@telegram-apps/telegram-ui";
 import { useSignal, initData } from "@telegram-apps/sdk-react";
 import { useRouter } from "next/navigation";
@@ -10,6 +8,7 @@ import { Page } from "@/components/Page";
 import stickerAnimation from "./_assets/sticker.json";
 import dynamic from "next/dynamic";
 import { InfinitySpin } from "react-loader-spinner";
+import { useUserAuthorization, User } from "@/hooks/useUserAuthorization";
 
 const LottieAnimation = dynamic(() => import("lottie-react"), {
   ssr: true,
@@ -29,65 +28,21 @@ const LottieAnimation = dynamic(() => import("lottie-react"), {
 });
 
 export default function Home() {
-  const dispatch = useAppDispatch();
-  const {
-    id,
-    loading: authLoading,
-    error: authError,
-  } = useAppSelector((state) => state.user);
-  const [navigationLoading, setNavigationLoading] = useState(false);
-  const [navigationError, setNavigationError] = useState<string | null>(null);
-  const [isContentLoaded, setIsContentLoaded] = useState(false);
-
   const router = useRouter();
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
 
   const initDataState = useSignal(initData.state);
-  const user = initDataState?.user;
+  const user: User | null = initDataState?.user || null;
 
-  const authorizeUser = useCallback(
-    async (signal?: AbortSignal) => {
-      try {
-        if (!user) return;
+  const {
+    id,
+    loading: authLoading,
+    error: authError,
+    isContentLoaded,
+  } = useUserAuthorization(user, serverUrl);
 
-        dispatch(authStart());
-        const response = await fetch(`${serverUrl}/api/user-controller/`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: user.id,
-            username: user.username,
-            first_name: user.firstName,
-          }),
-          signal,
-        });
-
-        if (!response.ok) throw new Error("Failed to authorize user");
-        const data = await response.json();
-        dispatch(authSuccess(data.id));
-      } catch (err) {
-        if (err instanceof Error && err.name !== "AbortError") {
-          dispatch(authFailure(err.message));
-        }
-      }
-    },
-    [user, serverUrl, dispatch]
-  );
-
-  useEffect(() => {
-    if (!user) return;
-
-    if (id) {
-      setIsContentLoaded(true);
-      return;
-    }
-
-    const controller = new AbortController();
-    authorizeUser(controller.signal).then(() => {
-      setIsContentLoaded(true);
-    });
-    return () => controller.abort();
-  }, [user, id, authorizeUser]);
+  const [navigationLoading, setNavigationLoading] = useState(false);
+  const [navigationError, setNavigationError] = useState<string | null>(null);
 
   const updateStatistics = useCallback(async () => {
     try {
@@ -100,8 +55,8 @@ export default function Home() {
           value: 1,
         }),
       });
-    } catch (err) {
-      console.error("Statistics update error:", err);
+    } catch (error) {
+      console.error("Statistics update error:", error);
     }
   }, [id, serverUrl]);
 
@@ -109,7 +64,7 @@ export default function Home() {
     try {
       setNavigationLoading(true);
       router.push("/tests/gibson-short");
-    } catch (err) {
+    } catch (error) {
       setNavigationError("Ошибка перехода. Попробуйте еще раз.");
     } finally {
       setNavigationLoading(false);
@@ -124,10 +79,8 @@ export default function Home() {
 
     try {
       await Promise.all([updateStatistics(), handleNavigation()]);
-    } catch (err) {
-      if (err instanceof Error) {
-        setNavigationError(err.message);
-      }
+    } catch (error: any) {
+      setNavigationError(error.message);
     }
   }, [user, id, updateStatistics, handleNavigation]);
 

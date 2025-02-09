@@ -1,12 +1,36 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useRef } from "react";
 import { Page } from "../Page";
 import { List } from "@telegram-apps/telegram-ui";
 import { SectionCard } from "../SectionCard/SectionCard";
 import styles from "./AboutBlock.module.css";
-import Image from "next/image";
-import gif from "../../../public/gif.gif";
 
 export function AboutBlock({ children }: PropsWithChildren) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          videoElement.play();
+        } else {
+          videoElement.pause();
+        }
+      },
+      {
+        threshold: 0.5,
+      }
+    );
+
+    observer.observe(videoElement);
+
+    return () => {
+      observer.unobserve(videoElement);
+    };
+  }, []);
+
   return (
     <Page back={false}>
       <List>
@@ -44,13 +68,18 @@ export function AboutBlock({ children }: PropsWithChildren) {
         />
 
         <div className={styles.videoContainer}>
-          <Image
-            width={1200}
-            height={900}
-            alt="gif file"
-            src={gif}
+          <video
+            ref={videoRef}
+            width={640}
+            height={360}
             className={styles.videoPlayer}
-          />
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src="/video.mp4" type="video/mp4" />
+          </video>
         </div>
 
         <SectionCard
@@ -95,11 +124,7 @@ export function AboutBlock({ children }: PropsWithChildren) {
               <div className={styles.attachmentTypes}>
                 <div className={styles.attachmentCard}>
                   <h4 className={styles.attachmentTitle}>Это плюс</h4>
-                  <ul
-                    style={{
-                      textAlign: "start",
-                    }}
-                  >
+                  <ul style={{ textAlign: "start" }}>
                     <li className={styles.attachmentText}>
                       Для вашего мировоззрения
                     </li>
@@ -111,11 +136,7 @@ export function AboutBlock({ children }: PropsWithChildren) {
                 </div>
                 <div className={styles.attachmentCard}>
                   <h4 className={styles.attachmentTitle}>Это минус</h4>
-                  <ul
-                    style={{
-                      textAlign: "start",
-                    }}
-                  >
+                  <ul style={{ textAlign: "start" }}>
                     <li className={styles.attachmentText}>
                       Для тех, кто вами манипулирует
                     </li>
@@ -125,14 +146,17 @@ export function AboutBlock({ children }: PropsWithChildren) {
 
               <h3 className={styles.subTitle}>А какая цена?</h3>
               <p className={styles.paragraphLast}>
-                Оплату мы сделали символичной.<br/>Нам важно, чтобы у вас была
-                примитивная мотивация получить эти знания и извлечь из них
-                пользу. <br/>Поэтому используйте этот курс как маленький шаг, который сделает
+                Оплату мы сделали символичной.
+                <br />
+                Нам важно, чтобы у вас была примитивная мотивация получить эти
+                знания и извлечь из них пользу. <br />
+                Поэтому используйте этот курс как маленький шаг, который сделает
                 вашу жизнь лучше.
               </p>
             </div>
           }
         />
+
         {children}
       </List>
     </Page>
