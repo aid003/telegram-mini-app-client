@@ -1,6 +1,5 @@
 "use client";
 
-// import { Page } from "@/components/Page";
 import { QuestionCard } from "@/components/QuestionCard/QuestionCard";
 import { ResultSlide } from "@/components/ResultCard/ResultCard";
 import { Headline, List, Progress } from "@telegram-apps/telegram-ui";
