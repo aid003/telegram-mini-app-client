@@ -1,9 +1,7 @@
 import type { PropsWithChildren } from "react";
 import type { Metadata } from "next";
-import { getLocale } from "next-intl/server";
 
 import { Root } from "@/components/Root/Root";
-import { I18nProvider } from "@/core/i18n/provider";
 
 import "@telegram-apps/telegram-ui/dist/styles.css";
 import "normalize.css/normalize.css";
@@ -11,21 +9,20 @@ import "./_assets/globals.css";
 import StoreProvider from "./StoreProvider";
 
 export const metadata: Metadata = {
-  title: "Your Application Title Goes Here",
-  description: "Your application description goes here",
+  title: "FllOWRIS",
 };
 
-export default async function RootLayout({ children }: PropsWithChildren) {
-  const locale = await getLocale();
+export function generateViewport() {
+  return "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
+}
 
+export default async function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang={locale}>
+    <html lang="ru">
       <body>
-        <I18nProvider>
-          <Root>
-            <StoreProvider>{children}</StoreProvider>
-          </Root>
-        </I18nProvider>
+        <StoreProvider>
+          <Root>{children}</Root>
+        </StoreProvider>
       </body>
     </html>
   );

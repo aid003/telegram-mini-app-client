@@ -5,12 +5,13 @@ import styles from "./PaymentSlide.module.css";
 export function PaymentSlide() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [paymentLink, setPaymentLink] = useState<string | null>(null);
-  const userId = useAppSelector((state) => state.user.id);
+  const [showPrice, setShowPrice] = useState(false);
 
+  const userId = useAppSelector((state) => state.user.id);
   const amount = process.env.NEXT_PUBLIC_AMOUNT!;
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
 
+  // Функция для отправки статистики
   const sendStatistics = async (stage: string, value: number) => {
     if (!userId) return;
     try {
@@ -23,7 +24,6 @@ export function PaymentSlide() {
           value,
         }),
       });
-
       if (!response.ok) {
         console.error("Ошибка обновления статистики: ", await response.text());
       }
@@ -32,96 +32,70 @@ export function PaymentSlide() {
     }
   };
 
-  const generatePaymentLink = async () => {
+  const generatePaymentLink = async (): Promise<string | null> => {
     if (!userId) {
       setError("Пользователь не авторизован");
-      return;
+      return null;
     }
-    setIsLoading(true);
-    setError(null);
-
     try {
       const response = await fetch(
         `${serverUrl}/api/generate-payment-process/`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             id: Number(userId),
             amount: Number(amount),
           }),
         }
       );
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Ошибка генерации оплаты");
       }
-
       const { paymentLink } = await response.json();
-      setPaymentLink(paymentLink);
-
-      if (paymentLink) {
-        window.location.href = paymentLink;
-      }
+      return paymentLink;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Неизвестная ошибка");
-    } finally {
-      setIsLoading(false);
+      return null;
     }
   };
 
- 
-  const buttonHandler = () => {
+  const buttonHandler = async () => {
     sendStatistics("courseButtonClicked", 1);
-    if (!paymentLink) {
-      generatePaymentLink();
-    } else {
+    setShowPrice(true);
+    setIsLoading(true);
+
+    const paymentLinkPromise = generatePaymentLink();
+    const animationDelay = new Promise<void>((resolve) =>
+      setTimeout(resolve, 4000)
+    );
+    const [paymentLink] = await Promise.all([
+      paymentLinkPromise,
+      animationDelay,
+    ]);
+
+    setShowPrice(false);
+    setIsLoading(false);
+
+    if (paymentLink) {
       window.location.href = paymentLink;
     }
   };
 
   return (
-    <div
-      style={{
-        background: "var(--tg-theme-secondary-bg-color)",
-        borderRadius: "1.5rem",
-        padding: "1.2rem",
-        margin: "1.5rem 0",
-        boxShadow: "0 6px 16px rgba(0,0,0,0.42)",
-        cursor: "pointer",
-      }}
-    >
+    <div className={styles.container}>
+      {showPrice && <div className={styles.priceAnimation}>{amount} ₽</div>}
+
       <button
         onClick={buttonHandler}
         disabled={isLoading}
-        style={{
-          width: "100%",
-          padding: "18px 28px",
-          background: isLoading
-            ? "grey"
-            : "linear-gradient(135deg, #4CAF50 0%, #45a049 100%)",
-          borderRadius: "16px",
-          border: "none",
-          fontSize: "20px",
-          fontWeight: 600,
-          color: "#fff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "14px",
-          boxShadow: "0 6px 20px rgba(76, 175, 80, 0.3)",
-          cursor: isLoading ? "not-allowed" : "pointer",
-        }}
+        className={styles.buyButton}
       >
         {isLoading ? "Генерация ссылки..." : <span>🚀 Купить курс</span>}
       </button>
 
-      {error && (
-        <div style={{ color: "red", marginTop: "10px" }}>Ошибка: {error}</div>
-      )}
+      {error && <div className={styles.error}>Ошибка: {error}</div>}
     </div>
   );
 }

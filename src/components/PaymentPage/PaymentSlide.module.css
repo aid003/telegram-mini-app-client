@@ -1,6 +1,66 @@
-.descriptionContainer {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Контейнер позиционируется относительно, чтобы блок с ценой можно было расположить абсолютно */
+.container {
+  position: relative;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.42);
+  cursor: pointer;
+}
+
+/* Блок с ценой позиционируется абсолютно, поэтому его появление не влияет на разметку страницы */
+.priceAnimation {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* Анимация длится 4 секунды */
+  animation: fadeInUp 4s forwards;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  padding: 0 10px;
+}
+
+/* Анимация плавного появления и подъёма */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Стили для кнопки */
+.buyButton {
+  width: 100%;
+  padding: 18px 28px;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  border-radius: 16px;
+  border: none;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+  cursor: pointer;
+}
+
+/* Стилизация для заблокированной кнопки */
+.buyButton:disabled {
+  background: grey;
+  cursor: not-allowed;
+}
+
+/* Стили для отображения ошибки */
+.error {
+  color: red;
+  margin-top: 10px;
 }
