@@ -1,4 +1,4 @@
-/* Контейнер позиционируется относительно, чтобы блок с ценой можно было расположить абсолютно */
+/* Контейнер, в котором находится кнопка */
 .container {
   position: relative;
   background: var(--tg-theme-secondary-bg-color);
@@ -9,34 +9,10 @@
   cursor: pointer;
 }
 
-/* Блок с ценой позиционируется абсолютно, поэтому его появление не влияет на разметку страницы */
-.priceAnimation {
-  position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  /* Анимация длится 4 секунды */
-  animation: fadeInUp 4s forwards;
-  text-align: center;
-  font-size: 24px;
-  font-weight: 600;
-  padding: 0 10px;
-}
-
-/* Анимация плавного появления и подъёма */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 10px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-}
-
-/* Стили для кнопки */
+/* Основные стили для кнопки */
 .buyButton {
+  position: relative;
+  /* чтобы SVG мог накладываться поверх кнопки */
   width: 100%;
   padding: 18px 28px;
   background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
@@ -51,12 +27,64 @@
   gap: 14px;
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
   cursor: pointer;
+  overflow: hidden;
+  /* чтобы анимация не «выпирала» за края */
 }
 
-/* Стилизация для заблокированной кнопки */
+/* Стили для заблокированной кнопки */
 .buyButton:disabled {
   background: grey;
   cursor: not-allowed;
+}
+
+/* SVG, который будет наложен поверх кнопки для обводки */
+.borderSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* чтобы клики не перехватывались SVG */
+  fill: none;
+  /* прозрачная заливка */
+  stroke: #fff;
+  /* цвет обводки */
+  stroke-width: 3;
+  /* толщина обводки */
+}
+
+/* Общие настройки для путей внутри SVG */
+.borderPath {
+  /* stroke-dasharray и stroke-dashoffset равны длине пути (примерно 120).
+     Проверьте точную длину для своих путей, иначе скорость анимации 
+     может отличаться от ожидаемой. */
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  opacity: 0;
+  /* изначально линия полностью прозрачна */
+}
+
+/* Когда у кнопки появляется класс .animate, запускаем анимацию */
+.animate .borderPath {
+  animation: drawBorder 4s cubic-bezier(0.28, 0.66, 0.46, 0.25) forwards;
+}
+
+/* Анимация: прорисовываем контур и проявляем его */
+@keyframes drawBorder {
+  0% {
+    stroke-dashoffset: 100;
+    /* линия спрятана */
+    opacity: 0;
+    /* и прозрачна */
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    /* линия нарисована */
+    opacity: 1;
+    /* и видна */
+  }
 }
 
 /* Стили для отображения ошибки */

@@ -5,13 +5,11 @@ import styles from "./PaymentSlide.module.css";
 export function PaymentSlide() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showPrice, setShowPrice] = useState(false);
 
   const userId = useAppSelector((state) => state.user.id);
   const amount = process.env.NEXT_PUBLIC_AMOUNT!;
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
 
-  // Функция для отправки статистики
   const sendStatistics = async (stage: string, value: number) => {
     if (!userId) return;
     try {
@@ -63,7 +61,6 @@ export function PaymentSlide() {
 
   const buttonHandler = async () => {
     sendStatistics("courseButtonClicked", 1);
-    setShowPrice(true);
     setIsLoading(true);
 
     const paymentLinkPromise = generatePaymentLink();
@@ -75,7 +72,6 @@ export function PaymentSlide() {
       animationDelay,
     ]);
 
-    setShowPrice(false);
     setIsLoading(false);
 
     if (paymentLink) {
@@ -85,16 +81,44 @@ export function PaymentSlide() {
 
   return (
     <div className={styles.container}>
-      {showPrice && <div className={styles.priceAnimation}>{amount} ₽</div>}
-
       <button
         onClick={buttonHandler}
         disabled={isLoading}
-        className={styles.buyButton}
+        className={`${styles.buyButton} ${isLoading ? styles.animate : ""}`}
       >
-        {isLoading ? "Генерация ссылки..." : <span>🚀 Купить курс</span>}
-      </button>
+        {isLoading ? <span>{amount} ₽</span> : <span>🚀 Купить курс</span>}
 
+        {isLoading && (
+          <svg
+            className={styles.borderSvg}
+            viewBox="0 0 200 60"
+            preserveAspectRatio="none"
+          >
+            <path
+              className={styles.borderPath}
+              d="
+                M100,60
+                H16
+                Q0,60 0,44
+                V16
+                Q0,0 16,0
+                H100
+              "
+            />
+            <path
+              className={styles.borderPath}
+              d="
+                M100,60
+                H184
+                Q200,60 200,44
+                V16
+                Q200,0 184,0
+                H100
+              "
+            />
+          </svg>
+        )}
+      </button>
       {error && <div className={styles.error}>Ошибка: {error}</div>}
     </div>
   );
